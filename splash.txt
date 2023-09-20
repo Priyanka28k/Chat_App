@@ -1,0 +1,78 @@
+// const splash = document.querySelector('.splash');
+
+// document.addEventListener('DOMContentLoaded', (e) => {
+//     setTimeout(()=> {
+//         splash.classList.add('display-none');
+//     }, 2000);
+// })
+
+// html code
+// <div class="splash">
+//     <img class="fade-in" src="whatsapp.png" alt="" style="width: 15%; height: 15%;">
+// </div>
+
+/* .splash{
+    position: absolute;
+    display: block;
+    margin: 20% 0% 0% 45%;  
+}
+
+.splash.display-none{
+    position: absolute;
+    opacity: 0;
+    display: block;
+    z-index: -10;
+    margin: 20% 0% 0% 45%;  
+}
+
+@keyframes fadeIn{
+    to{
+        opacity: 1;
+    }
+}
+
+.fade-in{
+    opacity: 0;
+    animation: fadeIn 1s ease-in forwards;
+} */
+
+
+
+/* .logo{
+    position: absolute;
+    display: block;
+    width: 10%;
+    height: 20%;
+    margin: 20% 0% 0% 45%;
+
+} */
+
+
+
+
+index.js server side code 
+
+
+// Node server which will handle socket io connections
+const io = require('socket.io')(3000);
+
+const users = {};
+
+  
+// socket ek particular connection hai toh 
+// io.on ek socket.io instance hai joki incoming requests ko listen karega
+//socket.on ka matlab hai ki jab bhi ek connection ke saath kuch hoga toh us particular connection par ke saath kya hona chahiye 
+io.on('connection', socket => {
+    socket.on('new-user-joined', name => {
+        console.log('New User joined');
+        console.log("New User", name);
+        users[socket.id] = name;   // when io.on listen the new request then socket.io give a unique to the user 
+        
+        socket.broadcast.emit('user-joined', name);   // Priyanka has joined the chat send message to all except Priyanka
+    });
+    
+    // socket.on ye events hote hai
+    socket.on('send', message => {
+        socket.broadcast.emit('receive', {message: message, name: user[socket.id]});
+    });
+})
